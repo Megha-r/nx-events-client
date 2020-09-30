@@ -13,7 +13,7 @@ const Application = (props) => {
           <Switch>
             <Route exact path="/">
               <Suspense fallback={<div> loading </div>}>
-                <Query />
+                <Wrapper />
               </Suspense>
             </Route>
           </Switch>
