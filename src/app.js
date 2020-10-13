@@ -4,6 +4,7 @@ import client from "./apollo";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Overview, Query, Wrapper } from "./modules";
 import Login from './pages/login/Login'
+import NestedList from './sample'
 
 const Application = (props) => {
   return (
@@ -13,13 +14,14 @@ const Application = (props) => {
           <Switch>
             <Route exact path="/">
               <Suspense fallback={<div> loading </div>}>
-                <Wrapper />
+                <Query />
               </Suspense>
             </Route>
           </Switch>
         </Suspense>
       </ApolloProvider>
     </Router>
+    // <NestedList />
   );
 };
 
