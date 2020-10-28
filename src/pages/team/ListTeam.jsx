@@ -5,8 +5,10 @@ import Compose from "lodash.flowright";
 import mg from "../../../src/imgps.png";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import ls from "local-storage";
 import TemporaryDrawer from "./../user/drawer";
 import Link from "@material-ui/core/Link";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   bar: { flexGrow: 1, overflow: "hidden" },
@@ -46,14 +48,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GetEvent = (evntId) => {};
+const postTeam = (history) => {
+  console.log("inside on click", history);
+  history.push("/AddTeam");
+};
 
 function Profile(props) {
+  const history = useHistory();
   const classes = useStyles();
-  const { data: { getAllEvents = {} } = {} } = props;
-  console.log("profile", getAllEvents);
-  const { data = [] } = getAllEvents;
-  console.log("data", data);
+  const { data: { getAllTeams = {} } = {} } = props;
+  //   console.log("profile", getAllTeams);
+  const { data = [] } = getAllTeams;
   return (
     <div>
       <TemporaryDrawer />
@@ -63,15 +68,16 @@ function Profile(props) {
             variant="contained"
             color="primary"
             className={classes.filter}
+            onClick={() => postTeam(history)}
           >
-            Filter
+            Add Team
           </Button>
         </div>
         <div className={classes.right}>
           <ul className={classes.ul}>
             {data.map((hit) => (
               <div className={classes.content}>
-                <li key={hit.eventId}>
+                <li key={hit.teamId}>
                   <Link
                     onClick={() => {
                       console.log("Hello");
@@ -81,19 +87,15 @@ function Profile(props) {
                   </Link>
                   <p>
                     <b>Title:</b>
-                    {hit.eventName}
+                    {hit.teamName}
                   </p>
                   <div>
                     <b>Description: </b>
                     {hit.description}
                   </div>
                   <div>
-                    <b>Start Date:</b>
-                    {hit.startDate}
-                  </div>
-                  <div>
-                    <b>Start Date:</b>
-                    {hit.endDate}
+                    <b>Team Id:</b>
+                    {hit.teamId}
                   </div>
                 </li>
               </div>
@@ -105,19 +107,16 @@ function Profile(props) {
   );
 }
 
-const EVENT_LIST = gql`
-  query getAllEvents {
-    getAllEvents {
+const TEAM_LIST = gql`
+  query getAllTeams {
+    getAllTeams {
       data {
         teamName
         description
-        eventId
-        startDate
-        endDate
-        eventName
+        teamId
       }
     }
   }
 `;
 
-export default Compose(graphql(EVENT_LIST, {}))(Profile);
+export default Compose(graphql(TEAM_LIST, {}))(Profile);

@@ -4,10 +4,13 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import * as yup from "yup";
+import * as jwt from "jsonwebtoken";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Container from "@material-ui/core/Container";
 import EmailIcon from "@material-ui/icons/Email";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import { Redirect } from "react-router-dom";
+import { Query } from "./../../modules";
 
 const schema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
@@ -49,6 +52,7 @@ class Login extends Component {
       email: "",
       password: "",
       message: "",
+      redirect: false,
       hasError: false,
       error: {
         email: "",
@@ -68,21 +72,26 @@ class Login extends Component {
   hasErrors = () => {
     const { hasError } = this.state;
     schema.isValid(this.state).then((valid) => {
-      console.log("asasasasasasasas", valid);
       if (!valid !== hasError) {
-        console.log("ddddddddddddd");
         this.setState({ hasError: !valid });
       }
     });
   };
 
   onClickHandler = async (Data) => {
-    console.log("rererererer", Data);
     const { message } = this.state;
+    this.setState({ redirect: true });
     const { loginEmployee } = this.props;
     const { email, password } = Data;
-    console.log("eeeeeeeeeeee", loginEmployee);
+    // console.log("eeeeeeeeeeee", loginEmployee);
     const response = await loginEmployee({ variables: { email, password } });
+    const token = response.data.loginEmployee.data;
+    console.log("token", token);
+    localStorage.setItem("token", token);
+    console.log(typeof token);
+    var decoded = jwt.verify(token, "qwertyuiopasdfghjklzxcvbnm123456");
+    localStorage.setItem("id", decoded.id);
+    // console.log("asasasasasadfefe", localStorage.getItem("id"));
     this.Message(response);
   };
 
@@ -127,6 +136,15 @@ class Login extends Component {
     return error[field];
   };
 
+  renderRedirect = () => {
+    const { redirect } = this.state;
+    console.log("redirect", redirect);
+    if (redirect) {
+      return <Redirect to="/EventList" />;
+    }
+    return true;
+  };
+
   Message(props) {
     const { message } = this.state;
     const { data: { loginEmployee = {} } = {} } = props;
@@ -139,9 +157,7 @@ class Login extends Component {
     const { email, password, hasError, error, message } = this.state;
     console.log(this.state);
     this.hasErrors();
-    return message.length ? (
-      <p>{message}</p>
-    ) : (
+    return (
       <Container component="main" maxWidth="lg">
         <CssBaseline />
         <div className={classes.paper}>
@@ -207,6 +223,7 @@ class Login extends Component {
               }}
             >
               Log In
+              {this.renderRedirect()}
             </Button>
           </form>
         </div>
