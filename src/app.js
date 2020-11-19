@@ -21,7 +21,6 @@ const Application = (props) => {
             <Route path="/Profile" component={ProfileWrapper} />
           </Switch>
         </Suspense>
-
       </Router>
       ) : (<Router {...props}>
         <Suspense fallback={<div> loading </div>}>
