@@ -42,6 +42,7 @@ wsLink.subscriptionClient.maxConnectTimeGenerator.duration = () => {
 };
 
 const authLink = setContext((_, { headers }) => {
+  const id = localStorage.getItem('id');
   const token = localStorage.getItem('token');
   return {
     headers: {
