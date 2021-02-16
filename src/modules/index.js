@@ -3,6 +3,8 @@ import {
 } from 'react';
 
 const Overview = lazy(() => import('./Overview'));
+// const Query = lazy(() => import('../modules/query'));
+// const Wrapper = lazy(() => import('../pages/login/Wrapper'));
 const Query = lazy(() => import('../pages/event/EventList'));
 const TeamList = lazy(() => import('../pages/team/ListTeam'))
 const LoginWrapper = lazy(() => import('../pages/login/Wrapper'));
