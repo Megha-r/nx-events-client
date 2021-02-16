@@ -4,17 +4,18 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import * as yup from "yup";
-import * as jwt from "jsonwebtoken";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import Container from "@material-ui/core/Container";
 import EmailIcon from "@material-ui/icons/Email";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import { Redirect } from "react-router-dom";
-import { Query } from "./../../modules";
 
 const schema = yup.object().shape({
   email: yup.string().email().required("Email is required"),
   password: yup.string().required("Password is required"),
+  eventName: yup.string().required("EventName is required"),
+  startDate: yup.string().required("Start Date is required"),
+  endDate: yup.string().required("End Date is required"),
+  description: yup.string().required("Descrition is required"),
 });
 
 const useStyles = (theme) => ({
@@ -45,22 +46,23 @@ const useStyles = (theme) => ({
   },
 });
 
-class Login extends Component {
+class AddEvents extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
-      password: "",
+      eventName: "",
+      description: "",
       message: "",
-      redirect: false,
       hasError: false,
       error: {
-        email: "",
-        password: "",
+        eventName: "",
+        description: "",
+        startDate: "",
+        endDate: "",
       },
       touched: {
-        email: false,
-        password: false,
+        eventName: false,
+        description: false,
       },
     };
   }
@@ -72,26 +74,21 @@ class Login extends Component {
   hasErrors = () => {
     const { hasError } = this.state;
     schema.isValid(this.state).then((valid) => {
+      console.log("asasasasasasasas", valid);
       if (!valid !== hasError) {
+        console.log("ddddddddddddd");
         this.setState({ hasError: !valid });
       }
     });
   };
 
   onClickHandler = async (Data) => {
+    console.log("rererererer", Data);
     const { message } = this.state;
-    this.setState({ redirect: true });
-    const { loginEmployee } = this.props;
+    const { putEmployee } = this.props;
     const { email, password } = Data;
-    // console.log("eeeeeeeeeeee", loginEmployee);
-    const response = await loginEmployee({ variables: { email, password } });
-    const token = response.data.loginEmployee.data;
-    console.log("token", token);
-    localStorage.setItem("token", token);
-    console.log(typeof token);
-    var decoded = jwt.verify(token, "qwertyuiopasdfghjklzxcvbnm123456");
-    localStorage.setItem("id", decoded.id);
-    // console.log("asasasasasadfefe", localStorage.getItem("id"));
+    console.log("eeeeeeeeeeee", putEmployee);
+    const response = await putEmployee({ variables: { email, password } });
     this.Message(response);
   };
 
@@ -136,15 +133,6 @@ class Login extends Component {
     return error[field];
   };
 
-  renderRedirect = () => {
-    const { redirect } = this.state;
-    console.log("redirect", redirect);
-    if (redirect) {
-      return <Redirect to="/EventList" />;
-    }
-    return true;
-  };
-
   Message(props) {
     const { message } = this.state;
     const { data: { loginEmployee = {} } = {} } = props;
@@ -154,36 +142,35 @@ class Login extends Component {
 
   render() {
     const { classes } = this.props;
-    const { email, password, hasError, error, message } = this.state;
+    const {
+      eventName,
+      description,
+      hasError,
+      error,
+      message,
+      startDate,
+      endDate,
+    } = this.state;
     console.log(this.state);
     this.hasErrors();
-    return (
+    return message.length ? (
+      <p>{message}</p>
+    ) : (
       <Container component="main" maxWidth="lg">
         <CssBaseline />
         <div className={classes.paper}>
-          <div className={classes.left}>
-            <p>
-              <h1>Event Management Tool</h1>
-            </p>
-            <p>
-              Event Management is the application of project management to the
-              creation and development of small and/or large scale personal or
-              corporate events such as festivals, conferences, ceremonies,
-              formal parties and convention.
-            </p>
-          </div>
           <form className={classes.form} noValidate>
             <TextField
-              label="Email Address"
+              label="Event Name"
               helperText="Some important text"
               variant="filled"
               margin="normal"
-              value={email}
-              error={!!error.email}
+              value={eventName}
+              error={!!error.eventName}
               fullWidth
-              onChange={this.handleChange("email")}
-              helperText={this.getError("email")}
-              onBlur={() => this.isTouched("email")}
+              onChange={this.handleChange("eventName")}
+              helperText={this.getError("eventName")}
+              onBlur={() => this.isTouched("eventName")}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -193,16 +180,54 @@ class Login extends Component {
               }}
             />
             <TextField
-              label="Password"
+              label="description"
               id="outlined-start-adornment"
               margin="normal"
-              type="password"
-              value={password}
-              error={!!error.password}
+              // type="password"
+              value={description}
+              error={!!error.description}
               fullWidth
-              onChange={this.handleChange("password")}
-              helperText={this.getError("password")}
-              onBlur={() => this.isTouched("password")}
+              onChange={this.handleChange("description")}
+              helperText={this.getError("description")}
+              onBlur={() => this.isTouched("description")}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <VpnKeyIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label="Start Date"
+              helperText="Some important text"
+              variant="filled"
+              margin="normal"
+              value={startDate}
+              error={!!error.startDate}
+              fullWidth
+              onChange={this.handleChange("startDate")}
+              helperText={this.getError("startDate")}
+              onBlur={() => this.isTouched("startDate")}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label="End Date"
+              id="outlined-start-adornment"
+              margin="normal"
+              // type="password"
+              value={endDate}
+              error={!!error.endDate}
+              fullWidth
+              onChange={this.handleChange("endDate")}
+              helperText={this.getError("endDate")}
+              onBlur={() => this.isTouched("endDate")}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -216,14 +241,18 @@ class Login extends Component {
               variant="contained"
               color="primary"
               className={classes.submit}
-              disabled={hasError}
+              // disabled={hasError}
               onClick={() => {
                 console.log("asasasasasdsdsdsdsd");
-                this.onClickHandler({ email, password });
+                this.onClickHandler({
+                  eventName,
+                  description,
+                  startDate,
+                  endDate,
+                });
               }}
             >
-              Log In
-              {this.renderRedirect()}
+              Submit
             </Button>
           </form>
         </div>
@@ -232,4 +261,4 @@ class Login extends Component {
   }
 }
 
-export default withStyles(useStyles)(Login);
+export default withStyles(useStyles)(AddEvents);
