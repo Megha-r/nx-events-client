@@ -4,10 +4,16 @@ import {
 
 const Overview = lazy(() => import('./Overview'));
 const Query = lazy(() => import('../pages/event/EventList'));
-const Wrapper = lazy(() => import('../pages/login/Wrapper'));
+const TeamList = lazy(() => import('../pages/team/ListTeam'))
+const LoginWrapper = lazy(() => import('../pages/login/Wrapper'));
+const AddTeamWrapper = lazy(() => import('../pages/team/Wrapper'));
+const ProfileWrapper = lazy(() => import('../pages/user/Wrapper'));
 
 export {
+    TeamList,
     Overview,
     Query,
-    Wrapper
+    ProfileWrapper,
+    LoginWrapper,
+    AddTeamWrapper
 };

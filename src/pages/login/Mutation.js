@@ -7,7 +7,8 @@ const LOGIN_USER = gql`
       loginEmployee(payload:{email: $email, password: $password})
       {
         message,
-        data
+        data,
+        status
       }
     }
   `;
